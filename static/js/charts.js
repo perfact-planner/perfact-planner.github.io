@@ -30,7 +30,7 @@
       tasks: TASKS6,
       tabs: [
         { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "MπNetsFusion plans in <b>0.22–0.24s</b> across the six environments. Averaged over Table III, this is approximately <b>4.6×</b> faster than AIT*, <b>18.5×</b> faster than MPNets, and <b>13.1×</b> faster than SIMPNet.",
+          desc: "MπNetsFusion plans in <b>0.22–0.24s</b> across the six environments. Averaged over Table III, this is approximately <b>4.6×</b> faster than AIT*, <b>18.5×</b> faster than MPNets, and <b>13.5×</b> faster than SIMPNet.",
           data: { ait: [1.02, 1.02, 1.02, 1.02, 1.02, 1.2], mpnets: [5.79, 2.8, 3.63, 3.39, 2.68, 7], simpnet: [4.54, 2.2, 3.55, 2.21, 2.57, 3.44], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } },
         { key: "sr", label: "Success Rate ↑", unit: "%",
           desc: "MπNetsFusion reaches <b>52.4%</b> average success — on par with AIT* (42.1%), MPNets (51%) and SIMPNet (51.8%) — while being an order of magnitude faster. Shelf tasks remain the hardest for every planner due to narrow passages and limited shelf-primitive diversity in training.",
@@ -68,7 +68,7 @@
   // ── Named ablation/comparison charts (Ablations & Comparisons section) ──
   var NAMED_CHARTS = {
 
-    // Table VII (Nr / S) + Table VIII (Cold-start / Params)
+    // Tables V–VI: modality combinations, cold-start time, and parameters
     combining: {
       groups: [
         { label: "Attention Baseline", methods: ["act"] },
@@ -86,9 +86,6 @@
       methodOrder: ["act", "all", "config", "vitac", "ours"],
       tasks: TASKS6,
       tabs: [
-        { key: "reach", label: "Goal Reaching ↑", unit: "%", tasks: TASKS6,
-          desc: "Fusing modalities through bottleneck tokens (All / Config / Ours) reaches the goal far more reliably than vanilla pairwise attention (ACT), which lets the workspace embedding dominate.",
-          data: { act: [87, 86, 88.5, 69.66, 74, 85.3], all: [96, 97.6, 100, 100, 95, 93], config: [100, 99.3, 100, 100, 98.3, 93.3], vitac: [100, 100, 100, 100, 98.3, 99.33], ours: [100, 100, 100, 100, 100, 97.3] } },
         { key: "succ", label: "Success Rate ↑", unit: "%", tasks: TASKS6,
           desc: "MπNetsFusion, its All/Config variants, and ViTacFormer all land within a few points of each other — well above the ACT baseline — confirming that restricting cross-modal flow through bottleneck tokens is what matters most.",
           data: { act: [37, 51, 65.25, 30.6, 27, 28.3], all: [49, 61, 86.75, 34, 31, 36.6], config: [57, 60.3, 85, 40.3, 34, 40.6], vitac: [57, 62, 85.75, 35.7, 34.6, 33.4], ours: [58, 61.3, 84.5, 38.0, 34.3, 38.3] } },
@@ -101,7 +98,7 @@
       ]
     },
 
-    // Figure 10: Neural MP (base / GMM head) vs MπNetsFusion
+    // Figure 5: Neural MP (base / GMM head) vs MπNetsFusion
     neuralmp: {
       groups: [{ label: "Neural MP", methods: ["base", "gmm"] }, { label: "Ours", methods: ["ours"] }],
       methodDefs: {
@@ -116,12 +113,12 @@
           desc: "Neural MP's GMM head closes much of the gap to its multi-modal, sampling-based base policy, but MπNetsFusion still edges ahead on TableTop, Box and — most notably — Bins (84.5% vs 58.5%), without any explicit multi-modal sampling head.",
           data: { base: [4.0, 19.0, 27.0, 14.0, 11.0, 13.0], gmm: [47.0, 61.0, 58.5, 43.4, 34.4, 29.4], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } },
         { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "MπNetsFusion plans roughly <b>15×</b> faster than Neural MP's GMM head across every task, since it makes a single forward pass rather than recurrently decoding with an RNN-based head. (Digitized from Fig. 10 — no per-task timing values are printed in the paper.)",
+          desc: "MπNetsFusion plans roughly <b>15×</b> faster than Neural MP's GMM head across every task, since it makes a single forward pass rather than recurrently decoding with an RNN-based head. (Digitized from revised-paper Fig. 5 — no per-task timing values are printed in the paper.)",
           data: { base: [0.68, 0.72, 0.70, 0.68, 0.70, 0.70], gmm: [3.45, 3.40, 3.60, 3.55, 3.48, 3.42], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } }
       ]
     },
 
-    // Figure 11: Diffusion Policy vs MπNetsFusion
+    // Figure 6: Diffusion Policy vs MπNetsFusion
     diffusion: {
       groups: [{ label: "Diffusion Policy", methods: ["dp"] }, { label: "Ours", methods: ["ours"] }],
       methodDefs: {
@@ -135,12 +132,12 @@
           desc: "With the same ACT-style encoder, MπNetsFusion's single-step flow head matches or slightly exceeds Diffusion Policy's success rate on every task.",
           data: { dp: [48, 55, 62, 33, 26, 29], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } },
         { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "Diffusion Policy's 100 denoising steps make it roughly <b>12×</b> slower than MπNetsFusion for comparable success. (Digitized from Fig. 11 — no per-task timing values are printed in the paper.)",
+          desc: "Diffusion Policy's 100 denoising steps make it roughly <b>12×</b> slower than MπNetsFusion for comparable success. (Digitized from revised-paper Fig. 6 — no per-task timing values are printed in the paper.)",
           data: { dp: [2.10, 2.75, 2.78, 2.65, 2.65, 2.75], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } }
       ]
     },
 
-    // Table IX / Table X: action-chunk size
+    // Table VII: action-chunk size
     actionchunk: {
       groups: [{ label: "Chunk Size", methods: ["c1", "c5", "c20", "cmain"] }],
       methodDefs: {
@@ -154,7 +151,7 @@
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%", tasks: TASKS6,
           desc: "Success rate is essentially flat across chunk sizes — expected, since all planners run open-loop to a fixed horizon in a static environment.",
-          data: { c1: [55, 57, 82, 35, 32, 36], c5: [57, 60, 81, 30, 34, 37], c20: [52, 60, 83, 35, 32, 40], cmain: [58, 61.3, 84.5, 35.7, 34.6, 33.4] } },
+          data: { c1: [55, 57, 82, 35, 32, 36], c5: [57, 60, 81, 30, 34, 37], c20: [52, 60, 83, 35, 32, 40], cmain: [58, 61.3, 84.5, 38.0, 34.3, 38.3] } },
         { key: "time", label: "Planning Time ↓", unit: "s", tasks: TASKS6,
           desc: "Larger chunks mean fewer robot point-cloud re-samples per rollout, so planning time drops sharply as chunk size grows from 1 to 10.",
           data: { c1: [1.38, 1.36, 1.34, 1.38, 1.39, 1.41], c5: [0.44, 0.49, 0.47, 0.47, 0.46, 0.47], c20: [0.29, 0.34, 0.30, 0.30, 0.28, 0.28], cmain: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } },
@@ -164,7 +161,7 @@
       ]
     },
 
-    // Table XII: bottleneck token count
+    // Table IX: bottleneck token count
     bottleneck: {
       groups: [{ label: "Bottleneck Tokens", methods: ["actwo", "b1", "b2", "b4", "b6", "b8"] }],
       methodDefs: {
@@ -180,28 +177,11 @@
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%",
           desc: "Any nonzero number of bottleneck tokens beats the no-bottleneck ACT baseline by a wide margin; performance is fairly stable from 1–8 tokens, so 4 is a good accuracy/size trade-off.",
-          data: { actwo: [37, 51, 65.25, 30.6, 27, 28.3], b1: [54, 60, 84, 34, 32, 35], b2: [54, 61, 80, 38, 33, 32], b4: [58, 61.3, 84.5, 35.7, 34.6, 33.4], b6: [56, 61, 86, 32, 32, 38], b8: [53, 61, 84, 33, 32, 35] } }
+          data: { actwo: [37, 51, 65.25, 30.6, 27, 28.3], b1: [54, 60, 84, 34, 32, 35], b2: [54, 61, 80, 38, 33, 32], b4: [58, 61.3, 84.5, 38.0, 34.3, 38.3], b6: [56, 61, 86, 32, 32, 38], b8: [53, 61, 84, 33, 32, 35] } }
       ]
     },
 
-    // Table XIII: PointNet++ set-abstraction radius
-    radius: {
-      groups: [{ label: "Set-Abstraction Radius", methods: ["r005", "r01", "r03"] }],
-      methodDefs: {
-        r005: { label: "0.05",        color: C.lightblue },
-        r01:  { label: "0.1 (Ours)",  color: OURS.color, ours: true },
-        r03:  { label: "0.3",         color: C.orange }
-      },
-      methodOrder: ["r005", "r01", "r03"],
-      tasks: TASKS6,
-      tabs: [
-        { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "Performance barely moves across radii — the downsampled point clouds (16 robot / 128 scene tokens) already cover the planning space well at any tested radius.",
-          data: { r005: [46, 59.7, 77.6, 31.7, 29.7, 35.7], r01: [48, 59, 77, 34, 29, 37], r03: [48, 61, 74.4, 37.3, 28.7, 36.7] } }
-      ]
-    },
-
-    // Table XI: workspace-generation source
+    // Table VIII: workspace-generation source
     workspacegen: {
       groups: [{ label: "Training Workspaces", methods: ["random", "llm"] }],
       methodDefs: {
@@ -217,7 +197,7 @@
       ]
     },
 
-    // Table VI: failure analysis (6 shelf variants + main tasks)
+    // Table IV: failure analysis (6 shelf variants + main tasks)
     failure: {
       groups: [{ label: "Environments", methods: ["v"] }],
       methodDefs: { v: { label: "MπNetsFusion", color: OURS.color, ours: true } },
@@ -240,18 +220,17 @@
     }
   };
 
-  // ── Real-world deployment: Table XIV ────────────────────────────────
+  // ── Real-world deployment: Table X ─────────────────────────────────
   var REALWORLD = {
-    groups: [{ label: "Metric", methods: ["reach", "succ"] }],
+    groups: [{ label: "Metric", methods: ["succ"] }],
     methodDefs: {
-      reach: { label: "Reached Goal", color: C.lightblue },
       succ:  { label: "Successful",   color: OURS.color, ours: true }
     },
-    methodOrder: ["reach", "succ"],
+    methodOrder: ["succ"],
     tasks: ["TableTop", "Bins", "Articulated", "Shelf", "Total"],
     tabs: [
       { key: "rate", label: "Real-World Rate", unit: "%",
-        data: { reach: [100, 100, 100, 100, 100], succ: [96, 84, 60, 36, 69] } }
+        data: { succ: [96, 84, 60, 36, 69] } }
     ]
   };
 

@@ -103,6 +103,12 @@
 
           <div class="anonymous-note">Anonymous project page for double-blind review.</div>
 
+          <div class="publication-video-block" style="margin-top:1.25rem;">
+            <video controls muted loop playsinline>
+              <source src="https://zh.engr.tamu.edu/wp-content/uploads/sites/310/2025/12/PerFACTVideoDemoCompressed.mp4" type="video/mp4">
+            </video>
+          </div>
+
         </div>
       </div>
     </div>
@@ -172,7 +178,7 @@
         <div class="highlight-card">
           <span class="highlight-icon"><i class="fas fa-robot"></i></span>
           <strong>138/200</strong>
-          <p>successful real-world trials (69%) on a physical UR5e across four task categories, zero-shot.</p>
+          <p>successful real-world trials (69%) on a physical UR5e across four task categories.</p>
         </div>
       </div>
     </div>
@@ -226,7 +232,7 @@
     </div>
 
     <div class="method-visual-card reveal-block">
-      <img src="./static/images/02MotionGeneralizer.png"
+      <img src="./static/images/02MotionBenchGenFramework.png"
            alt="MotionBenchGen framework: robot and table selection, LLM-guided primitive counts, procedural generation, and LLM-guided primitive placement">
       <p>
         <strong>MotionBenchGen Framework.</strong> A fine-tuned LLM is prompted in a few-shot manner twice per
@@ -377,15 +383,6 @@
       <div class="stat-card"><div class="stat-num">1 day</div><div class="stat-label">on a single NVIDIA A100 GPU</div></div>
     </div>
 
-    <h3 class="subsec-heading">Qualitative Rollouts</h3>
-    <div class="fig-wrap fig-lg reveal-block">
-      <img src="./static/images/08SimulationDemo.jpg"
-           alt="Simulated policy rollouts across six held-out environments, each shown as start, intermediate frames, and goal">
-      <p class="fig-cap">
-        <strong>Simulated Rollouts.</strong> M&pi;NetsFusion planning across the six held-out evaluation tasks,
-        each solved in roughly 0.22&ndash;0.24s. Frames show the path profile from start to goal.
-      </p>
-    </div>
   </div>
 </section>
 
@@ -443,23 +440,6 @@
       </p>
       <div class="fmp-bar-chart" data-chart="combining"></div>
 
-      <h3 class="subsec-heading">Compared Architectures</h3>
-      <div class="columns is-centered" style="margin-top:0.5rem;">
-        <div class="column is-half">
-          <div class="fig-wrap mini-figure">
-            <img src="./static/images/09ACTArchitecture.png"
-                 alt="ACT baseline architecture: standard pairwise transformer encoder over all planning modalities feeding a transformer decoder">
-            <p class="fig-cap"><strong>ACT Baseline.</strong> Standard pairwise attention over all planning modalities, with no bottleneck restriction on information flow.</p>
-          </div>
-        </div>
-        <div class="column is-half">
-          <div class="fig-wrap mini-figure">
-            <img src="./static/images/10ViTacFormer.png"
-                 alt="ViTacFormer architecture: cross-attention between robot and workspace embeddings via key/query/value projections">
-            <p class="fig-cap"><strong>ViTacFormer.</strong> Learns cross-modal interaction via explicit cross-attention between robot and workspace embeddings.</p>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- vs Neural MP -->
@@ -517,7 +497,7 @@
     <div class="sec-panel sec-panel-hidden" id="panel-failure">
       <p class="sec-panel-desc">
         Extending the shelf evaluation to six shelf variants (versus three in the main benchmark) isolates why
-        shelf tasks are hard: M&pi;NetsFusion always reaches a nearby pose, but open-loop rollout — with no
+        shelf tasks are hard: M&pi;NetsFusion reaches a nearby pose in nearly all cases, but open-loop rollout — with no
         iterative collision checking — is far more prone to scene-collisions in these narrow, cluttered spaces.
       </p>
       <div class="fmp-bar-chart" data-chart="failure"></div>
@@ -533,24 +513,24 @@
 
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        M&pi;NetsFusion transfers zero-shot to a physical UR5e. Calibrated RGB-D cameras reconstruct the same
-        point-cloud representation used during simulation training.
+        M&pi;NetsFusion is evaluated on a physical UR5e using calibrated RGB-D sensing. The real-world evaluation
+        follows the four task categories reported in the revised paper: TableTop, Bins, Articulated, and Shelf.
       </p>
     </div>
 
     <div class="columns is-centered reveal-block">
       <div class="column is-half">
         <div class="fig-wrap">
-          <img src="./static/images/11ExpSetup.jpg"
+          <img src="./static/images/07RealWorldSetup.jpg"
                alt="Real-world experimental setup: a UR5e manipulator with a tripod-mounted RGB-D camera">
           <p class="fig-cap"><strong>Experimental Setup.</strong> UR5e manipulator with a calibrated Intel RealSense D435i RGB-D camera.</p>
         </div>
       </div>
       <div class="column is-half">
         <div class="fig-wrap">
-          <img src="./static/images/12RealTasks.jpg"
-               alt="Four real-world evaluation task categories: TableTop, Bins, Articulated, and Shelf">
-          <p class="fig-cap"><strong>Evaluation Categories.</strong> TableTop, Bins, Articulated (drawers/microwave), and Shelf tasks.</p>
+          <img src="./static/images/08RealWorldDeployment.png"
+               alt="Revised-paper Figure 8: real-world UR5e rollouts for TableTop, Bins, Articulated, and Shelf tasks">
+          <p class="fig-cap"><strong>Real-world deployment.</strong> The revised paper's Figure 8 shows the path profile from start to goal for all four task categories.</p>
         </div>
       </div>
     </div>
@@ -558,48 +538,10 @@
     <div class="realworld-chart-card reveal-block">
       <div class="fmp-bar-chart realworld-chart" data-chart="realworld"></div>
       <p class="tbl-cap" style="text-align:center; font-size:0.82rem; color:#555; margin-top:0.5rem;">
-        <strong>Real-world results.</strong> The planner reaches the goal in 100% of all 200 real-world trials;
-        138 (69%) are fully successful and collision-free. Shelf tasks remain hardest (36%), consistent with
+        <strong>Real-world results.</strong> The revised paper reports 138 successful collision-free trials out of
+        200 (69%). Shelf tasks remain hardest (36%), consistent with
         simulation — narrow passages and limited shelf-primitive diversity in training.
       </p>
-    </div>
-
-    <h3 class="subsec-heading">Task Gallery</h3>
-    <div class="task-gallery reveal-block">
-      <div class="task-gallery-nav" role="tablist">
-        <button class="active" data-panel="gal-tabletop">TableTop</button>
-        <button data-panel="gal-bins">Bins</button>
-        <button data-panel="gal-articulated">Articulated</button>
-        <button data-panel="gal-shelf">Shelf</button>
-      </div>
-      <div class="task-gallery-panel active" id="gal-tabletop">
-        <div class="fig-wrap fig-lg">
-          <img src="./static/images/13TableTopReal.jpg"
-               alt="TableTop task real-world rollout with matching simulated point-cloud frames, from start to goal">
-          <p class="fig-cap">TableTop: 48/50 (96%) successful, all 50/50 goals reached.</p>
-        </div>
-      </div>
-      <div class="task-gallery-panel" id="gal-bins">
-        <div class="fig-wrap fig-lg">
-          <img src="./static/images/13BinReal.jpg"
-               alt="Bins task real-world rollout with matching simulated point-cloud frames, from start to goal">
-          <p class="fig-cap">Bins: 42/50 (84%) successful, all 50/50 goals reached.</p>
-        </div>
-      </div>
-      <div class="task-gallery-panel" id="gal-articulated">
-        <div class="fig-wrap fig-lg">
-          <img src="./static/images/14ArticulatedReal.jpg"
-               alt="Articulated task real-world rollout with matching simulated point-cloud frames, from start to goal">
-          <p class="fig-cap">Articulated: 30/50 (60%) successful, all 50/50 goals reached.</p>
-        </div>
-      </div>
-      <div class="task-gallery-panel" id="gal-shelf">
-        <div class="fig-wrap fig-lg">
-          <img src="./static/images/15ShelfReal.jpg"
-               alt="Shelf task real-world rollout with matching simulated point-cloud frames, from start to goal">
-          <p class="fig-cap">Shelf: 18/50 (36%) successful, all 50/50 goals reached.</p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -614,8 +556,8 @@
       <p>
         PerFACT pairs MotionBenchGen, an LLM-guided procedural workspace generator, with M&pi;NetsFusion, a
         bottleneck-fusion action-chunking transformer, to train an end-to-end neural motion planner that
-        matches classical and neural-sampler baselines in success rate while planning up to an order of
-        magnitude faster — and transfers zero-shot to a physical UR5e.
+        matches classical and neural-sampler baselines in success rate while planning substantially faster,
+        and is evaluated on a physical UR5e.
       </p>
     </div>
 
