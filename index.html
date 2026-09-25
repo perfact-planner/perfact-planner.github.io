@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="PerFACT: Motion Policy with LLM-Powered Dataset Synthesis and Fusion Action-Chunking Transformers. Anonymous project page for review.">
+  <meta name="keywords" content="PerFACT, MotionBenchGen, MπNetsFusion, motion planning, LLM, robotics, action chunking transformers, fusion transformers, UR5e">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PerFACT: Motion Policy with LLM-Powered Dataset Synthesis and Fusion Action-Chunking Transformers</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/site-polish.css?v=20260724">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./static/js/charts.js"></script>
+  <script defer src="./static/js/site-polish.js?v=20260724"></script>
+</head>
+<body id="top">
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item project-mark" href="#top" aria-label="PerFACT home">
+      <span class="project-mark-symbol">P</span><span>PerFACT</span>
+    </a>
+    <button type="button" class="navbar-burger" aria-label="Open navigation menu" aria-expanded="false">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow:1; justify-content:center;">
+      <a class="navbar-item" href="#top" aria-label="Back to top"><span class="icon"><i class="fas fa-home"></i></span></a>
+      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#motionbenchgen">MotionBenchGen</a>
+      <a class="navbar-item" href="#mpinetsfusion">M&pi;NetsFusion</a>
+      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#ablations">Ablations</a>
+      <a class="navbar-item" href="#realworld">Real-World</a>
+      <a class="navbar-item" href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ===================== HERO ===================== -->
+<section class="hero sec-white">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <h1 class="title publication-title">
+            PerFACT: Motion Policy with LLM-Powered Dataset Synthesis<br class="title-break">
+            and Fusion Action-Chunking Transformers
+          </h1>
+
+          <div class="is-size-5 publication-authors" style="margin-top:0.8rem;">
+            <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-6" style="margin-top:0.4rem; color:#555;">
+            <span class="author-block">Anonymous submission</span>
+          </div>
+
+          <div class="is-size-6" style="margin-top:0.15rem; color:#555;">
+            <span class="author-block">Under review</span>
+          </div>
+
+          <div class="column has-text-centered" style="padding-top:1.1rem; padding-bottom:0.2rem;">
+            <div class="publication-links">
+              <span class="link-block">
+                <span class="external-link button is-normal is-rounded is-dark is-unavailable" aria-disabled="true" title="PDF omitted for anonymous review">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+                </span>
+              </span>
+              <span class="link-block">
+                <span class="external-link button is-normal is-rounded is-dark is-unavailable" aria-disabled="true" title="Code release coming soon">
+                  <span class="icon"><i class="fab fa-github"></i></span><span>Code (Coming Soon)</span>
+                </span>
+              </span>
+              <span class="link-block">
+                <span class="external-link button is-normal is-rounded is-dark is-unavailable" aria-disabled="true" title="Dataset release coming soon">
+                  <span class="icon"><img src="./static/images/hf_icon.svg" alt="Hugging Face"></span>
+                  <span>Dataset (Coming Soon)</span>
+                </span>
+              </span>
+              <span class="link-block">
+                <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-quote-right"></i></span><span>BibTeX</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <div class="anonymous-note">Anonymous project page for double-blind review.</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== OPENING FIGURE ===================== -->
+<section class="section sec-gray" style="padding-top:2rem; padding-bottom:2rem;">
+  <div class="container is-max-desktop">
+    <div class="fig-wrap fig-full">
+      <img src="./static/images/01OpeningImage.jpg"
+           alt="PerFACT overview: LLM-powered workspace generation, data collection with cuRobo, MπNetsFusion training and rollout, and real-world deployment on a UR5e manipulator">
+      <p class="fig-cap">
+        <strong>PerFACT overview.</strong> MotionBenchGen creates diverse workspaces and planning data;
+        M&pi;NetsFusion learns an open-loop motion policy for simulation and real-world deployment.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== ABSTRACT ===================== -->
+<section class="section sec-white" id="abstract">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="sec-heading">Abstract</h2>
+        <div class="content has-text-justified" style="font-size:0.97rem; line-height:1.75; color:#333;">
+          <p>
+            Learning-based motion planners offer low-latency inference but require large and diverse planning
+            datasets. However, manually designed workspace generators provide limited variation.
+          </p>
+          <p>
+            <strong>PerFACT</strong> combines LLM-assisted workspace generation (<strong>MotionBenchGen</strong>) with
+            modality-aware neural motion planning (<strong>M&pi;NetsFusion</strong>). MotionBenchGen integrates
+            LLM-guided primitive selection and placement with procedural scene generation to collect 3.5M
+            planning trajectories across approximately 1,000 synthetic workspaces. M&pi;NetsFusion fuses robot
+            configuration, robot point-cloud, and workspace point-cloud features through bottleneck-based fusion
+            within an action-chunking transformer. It achieves 52.4% average success in held-out simulation and
+            69% success across 200 real-world trials.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Highlights -->
+    <div class="fmp-highlight-shell reveal-block">
+      <div class="highlight-kicker">Highlights</div>
+      <h3>Generate the world, then plan through it in one open-loop pass.</h3>
+      <div class="highlight-grid">
+        <div class="highlight-card primary">
+          <span class="highlight-icon"><i class="fas fa-bolt"></i></span>
+          <strong>0.23s</strong>
+          <p>mean simulated planning time across six held-out environments (0.22&ndash;0.24s per task).</p>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon"><i class="fas fa-layer-group"></i></span>
+          <strong>3.5M</strong>
+          <p>training trajectories collected across ~1000 MotionBenchGen workspaces via cuRobo.</p>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon"><i class="fas fa-chart-line"></i></span>
+          <strong>52.4%</strong>
+          <p>average simulated success rate — competitive with AIT*, MPNets, and SIMPNet baselines.</p>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-icon"><i class="fas fa-robot"></i></span>
+          <strong>138/200</strong>
+          <p>successful real-world trials (69%) on a physical UR5e across four task categories, zero-shot.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== MOTIONBENCHGEN ===================== -->
+<section class="section sec-gray" id="motionbenchgen">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">MotionBenchGen</h2>
+
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        <strong>MotionBenchGen</strong> uses procedural primitives and LLM-guided placement to create
+        diverse, cluttered, and physically feasible workspaces at scale.
+      </p>
+    </div>
+
+    <div class="method-story reveal-block">
+      <div class="method-copy">
+        <div class="highlight-kicker">Pipeline</div>
+        <h3>An LLM decides scene composition; procedural generation fills it in.</h3>
+        <p>
+          Given a robot and a randomly chosen number of surrounding tables, MotionBenchGen queries a
+          fine-tuned LLM twice in a few-shot manner: once to pick how many primitives go on each table, and
+          once to place their origin and orientation — before validating and de-duplicating the result.
+        </p>
+      </div>
+      <div class="method-steps">
+        <div class="method-step">
+          <span>1</span>
+          <h4>Procedural Primitive Generation</h4>
+          <p>Combine primitive pools from Neural MP and NVIDIA SceneSynthesizer to generate everyday articulated
+             objects — tables, cabinets, dishwashers, microwaves, shelves — with randomized sizes and joint
+             configurations.</p>
+        </div>
+        <div class="method-step">
+          <span>2</span>
+          <h4>LLM-Guided Placement</h4>
+          <p>GPT-4 is prompted with robot and table specifications to choose primitive counts per table, then
+             prompted again with the generated primitives to set each object's pose relative to its table.</p>
+        </div>
+        <div class="method-step">
+          <span>3</span>
+          <h4>Validate &amp; Diversify</h4>
+          <p>Collision-normal correction resolves any residual overlaps; a text-embedding similarity check
+             against prior workspace descriptions rejects near-duplicate scenes to keep the dataset diverse.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-visual-card reveal-block">
+      <img src="./static/images/02MotionGeneralizer.png"
+           alt="MotionBenchGen framework: robot and table selection, LLM-guided primitive counts, procedural generation, and LLM-guided primitive placement">
+      <p>
+        <strong>MotionBenchGen Framework.</strong> A fine-tuned LLM is prompted in a few-shot manner twice per
+        workspace: first to determine the number of primitives per table, then — once those primitives are
+        procedurally generated — to specify each primitive's origin and orientation. The process repeats to
+        generate an arbitrary number (N) of diverse planning workspaces.
+      </p>
+    </div>
+
+    <div class="fig-wrap fig-lg reveal-block">
+      <img src="./static/images/03WorkspaceExamples.jpg"
+           alt="Eight example diverse, cluttered workspaces generated by MotionBenchGen for a UR5e manipulator">
+      <p class="fig-cap">
+        <strong>Generated Workspaces.</strong> MotionBenchGen produces an arbitrary number of cluttered,
+        diverse workspaces for a given manipulator (UR5e shown) drawn from a pool of everyday primitives.
+      </p>
+    </div>
+
+    <h3 class="subsec-heading">Perception &amp; Planning-Problem Generation</h3>
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        Rather than rendering occluded, slow RGB-D point clouds in simulation, MotionBenchGen synthesizes a
+        privileged workspace point cloud by uniformly sampling points directly on obstacle and manipulator
+        meshes at arbitrary configurations — enabling large-scale training before fine-tuning on real,
+        partial camera reconstructions at deployment. It then samples collision-free poses within the
+        generated primitives and the manipulator's reachable region to define robot-agnostic, scene-specific
+        motion-planning problems that any off-the-shelf planner (OMPL, cuRobo) can solve for data collection.
+      </p>
+    </div>
+
+    <div class="columns is-centered reveal-block" style="margin-top:1rem;">
+      <div class="column is-half">
+        <div class="fig-wrap">
+          <img src="./static/images/04PointCloudSynthesis.png"
+               alt="Point cloud synthesis: scene-only point cloud versus scene-with-robot point cloud">
+          <p class="fig-cap">
+            <strong>Point Cloud Synthesis.</strong> Uniform surface sampling on workspace primitives (a) and on
+            the manipulator at arbitrary configurations (b) gives dense, unoccluded training point clouds.
+          </p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="fig-wrap">
+          <img src="./static/images/05PlanningProblems.jpg"
+               alt="Planning problem generation: a UR5e manipulator moving through four frames from a sampled start to goal pose">
+          <p class="fig-cap">
+            <strong>Planning-Problem Generation.</strong> Collision-free start/goal poses are sampled within the
+            workspace and solved via robot-specific inverse kinematics for any embodiment (UR5e shown).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="fig-wrap fig-lg reveal-block">
+      <img src="./static/images/06MotionBenchMakerCompare.jpg"
+           alt="Comparison: MotionBenchMaker's eight fixed workspace types versus MotionBenchGen's diverse, cluttered generated workspaces">
+      <p class="fig-cap">
+        <strong>MotionBenchGen vs. MotionBenchMaker.</strong> MotionBenchMaker (top) offers only eight fixed
+        workspace types with a single major obstacle each. MotionBenchGen (bottom) generates an arbitrary
+        number of cluttered, multi-object workspaces — only 8 shown here for a fair visual comparison.
+      </p>
+    </div>
+
+    <h3 class="subsec-heading">Quantitative Workspace Quality</h3>
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        Against a random-placement baseline using identical primitives, MotionBenchGen is evaluated on four
+        motion-planning-relevant metrics: scene- and object-level collision rates, object-category entropy
+        (type diversity), and table surface coverage (clutter density).
+      </p>
+    </div>
+    <div class="compare-panel-card" data-compare="wsquality"></div>
+  </div>
+</section>
+
+
+<!-- ===================== MπNETSFUSION ===================== -->
+<section class="section sec-white" id="mpinetsfusion">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">M&pi;NetsFusion</h2>
+
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        <strong>M&pi;NetsFusion</strong> routes cross-modal information through learnable bottleneck tokens,
+        keeping robot, workspace, and configuration signals balanced while predicting complete action chunks.
+      </p>
+    </div>
+
+    <div class="method-story reveal-block">
+      <div class="method-copy">
+        <div class="highlight-kicker">Method</div>
+        <h3>Bottleneck tokens mediate cross-modal attention.</h3>
+        <p>
+          Current/goal configurations and robot/scene point clouds are tokenized separately, processed by
+          unimodal transformer layers, then fused: each modality attends only to a shared pool of bottleneck
+          tokens inside the fusion transformer, rather than attending directly to every other modality.
+        </p>
+        <div class="formula-pill">
+          L = (1&frasl;A) &sum;<sub>i=1</sub><sup>A</sup> &Vert; &delta;q<sub>i</sub> &minus; &delta;q&#772;<sub>i</sub> &Vert;<sup>2</sup>
+        </div>
+      </div>
+      <div class="method-steps">
+        <div class="method-step">
+          <span>1</span>
+          <h4>Encode Planning Modalities</h4>
+          <p>An MLP tokenizes current/goal configurations; PointNet++ set-abstraction layers tokenize robot
+             and scene point clouds into compact embeddings.</p>
+        </div>
+        <div class="method-step">
+          <span>2</span>
+          <h4>Fuse Through Bottleneck Tokens</h4>
+          <p>Unimodal transformer layers refine each modality; a fusion transformer routes cross-modal
+             information exclusively through learnable bottleneck tokens, preventing any one modality
+             from dominating.</p>
+        </div>
+        <div class="method-step">
+          <span>3</span>
+          <h4>Decode Action Chunks</h4>
+          <p>A transformer decoder attends over the fused memory with learnable action tokens to output a
+             chunk of delta-joint actions, executed open-loop and recursively fed back as the next input.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-visual-card reveal-block">
+      <img src="./static/images/07FusionArchitecture.png"
+           alt="MπNetsFusion architecture: PointNet++ set abstraction and MLP encoders feed unimodal transformers and a fusion transformer with bottleneck tokens, decoded by a transformer decoder into action chunks">
+      <p>
+        <strong>M&pi;NetsFusion Architecture.</strong> Current/goal configuration and robot/scene point-cloud
+        embeddings pass through unimodal transformer layers (&times;L<sub>f</sub>), fuse through bottleneck
+        tokens inside the fusion transformer (&times;L<sub>b</sub>), and are decoded — via learnable action
+        tokens — into a chunk of delta-joint actions.
+      </p>
+    </div>
+
+    <h3 class="subsec-heading">Training Setup</h3>
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        M&pi;NetsFusion is trained end-to-end with an MSE loss on delta-joint actions, using the 3.5M-trajectory
+        dataset collected via MotionBenchGen and cuRobo across roughly 1000 generated workspaces for a UR5e
+        manipulator.
+      </p>
+    </div>
+    <div class="stats-strip reveal-block">
+      <div class="stat-card"><div class="stat-num">4.9M</div><div class="stat-label">model parameters</div></div>
+      <div class="stat-card"><div class="stat-num">1.6M</div><div class="stat-label">gradient steps</div></div>
+      <div class="stat-card"><div class="stat-num">256</div><div class="stat-label">batch size, action chunk 10</div></div>
+      <div class="stat-card"><div class="stat-num">1 day</div><div class="stat-label">on a single NVIDIA A100 GPU</div></div>
+    </div>
+
+    <h3 class="subsec-heading">Qualitative Rollouts</h3>
+    <div class="fig-wrap fig-lg reveal-block">
+      <img src="./static/images/08SimulationDemo.jpg"
+           alt="Simulated policy rollouts across six held-out environments, each shown as start, intermediate frames, and goal">
+      <p class="fig-cap">
+        <strong>Simulated Rollouts.</strong> M&pi;NetsFusion planning across the six held-out evaluation tasks,
+        each solved in roughly 0.22&ndash;0.24s. Frames show the path profile from start to goal.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== RESULTS ===================== -->
+<section class="section sec-gray" id="results">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">Results</h2>
+
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        We evaluate M&pi;NetsFusion against <strong>AIT*</strong>, <strong>MPNets</strong>, and
+        <strong>SIMPNet</strong> across six held-out environments using the same UR5e and collision-free
+        success criteria.
+      </p>
+    </div>
+
+    <div class="fmp-bar-chart reveal-block" data-chart="main"></div>
+
+    <h3 class="subsec-heading">Held-out Evaluation</h3>
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        Across the six held-out environments, M&pi;NetsFusion achieves
+        <strong>52.4% average collision-free success</strong>, with per-environment planning times between
+        <strong>0.22 and 0.24 seconds</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== ABLATIONS & COMPARISONS ===================== -->
+<section class="section sec-white" id="ablations">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">Ablations &amp; Comparisons</h2>
+
+    <div class="sec-tab-nav" role="tablist">
+      <button class="sec-tab active" data-panel="panel-combining">Combining Modalities</button>
+      <button class="sec-tab" data-panel="panel-neuralmp">vs Neural MP</button>
+      <button class="sec-tab" data-panel="panel-diffusion">vs Diffusion Policy</button>
+      <button class="sec-tab" data-panel="panel-actionchunk">Action Chunk Size</button>
+      <button class="sec-tab" data-panel="panel-bottleneck">Bottleneck Tokens</button>
+      <button class="sec-tab" data-panel="panel-workspacegen">Workspace Source</button>
+      <button class="sec-tab" data-panel="panel-failure">Failure Analysis</button>
+    </div>
+
+    <!-- Combining Modalities -->
+    <div class="sec-panel" id="panel-combining">
+      <p class="sec-panel-desc">
+        How should robot, workspace, and configuration embeddings talk to each other? We compare M&pi;NetsFusion
+        against a vanilla pairwise-attention baseline (ACT), two variants that separate modalities further
+        (<em>All</em>: 4 separate modalities; <em>Config</em>: current+goal configuration merged into one token
+        stream), and ViTacFormer's cross-attention design. Bottleneck-token fusion — in any of its variants —
+        consistently beats plain pairwise attention.
+      </p>
+      <div class="fmp-bar-chart" data-chart="combining"></div>
+
+      <h3 class="subsec-heading">Compared Architectures</h3>
+      <div class="columns is-centered" style="margin-top:0.5rem;">
+        <div class="column is-half">
+          <div class="fig-wrap mini-figure">
+            <img src="./static/images/09ACTArchitecture.png"
+                 alt="ACT baseline architecture: standard pairwise transformer encoder over all planning modalities feeding a transformer decoder">
+            <p class="fig-cap"><strong>ACT Baseline.</strong> Standard pairwise attention over all planning modalities, with no bottleneck restriction on information flow.</p>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="fig-wrap mini-figure">
+            <img src="./static/images/10ViTacFormer.png"
+                 alt="ViTacFormer architecture: cross-attention between robot and workspace embeddings via key/query/value projections">
+            <p class="fig-cap"><strong>ViTacFormer.</strong> Learns cross-modal interaction via explicit cross-attention between robot and workspace embeddings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- vs Neural MP -->
+    <div class="sec-panel sec-panel-hidden" id="panel-neuralmp">
+      <p class="sec-panel-desc">
+        Neural MP is an open-loop planner with an RNN-based decoder; its GMM head adds multi-modal, sampling-based
+        best-of-N behavior. M&pi;NetsFusion matches or exceeds Neural MP's GMM head — most notably on Bins
+        (84.5% vs. 58.5%) — using a single forward pass instead of recurrent, multi-modal decoding.
+      </p>
+      <div class="fmp-bar-chart" data-chart="neuralmp"></div>
+    </div>
+
+    <!-- vs Diffusion Policy -->
+    <div class="sec-panel sec-panel-hidden" id="panel-diffusion">
+      <p class="sec-panel-desc">
+        Swapping M&pi;NetsFusion's action head for a Diffusion Policy head (same ACT-style encoder, 100 denoising
+        steps, closed-loop) isolates the effect of the generative action head itself. M&pi;NetsFusion matches or
+        beats Diffusion Policy's success rate while avoiding its iterative denoising cost.
+      </p>
+      <div class="fmp-bar-chart" data-chart="diffusion"></div>
+    </div>
+
+    <!-- Action Chunk Size -->
+    <div class="sec-panel sec-panel-hidden" id="panel-actionchunk">
+      <p class="sec-panel-desc">
+        Because M&pi;NetsFusion unrolls a fixed number of total steps, chunk size trades planning time for
+        re-sampling frequency of the robot's body point cloud. Success stays flat, but planning time drops
+        sharply as chunk size grows — the main model (chunk size 10) is roughly 6&times; faster than chunk
+        size 1.
+      </p>
+      <div class="fmp-bar-chart" data-chart="actionchunk"></div>
+    </div>
+
+    <!-- Bottleneck Tokens -->
+    <div class="sec-panel sec-panel-hidden" id="panel-bottleneck">
+      <p class="sec-panel-desc">
+        Sweeping the number of bottleneck tokens from 0 (ACT) to 8 shows that any nonzero bottleneck sharply
+        improves success, and performance is stable across 1&ndash;8 tokens — 4 tokens is used as the main
+        configuration for its favorable accuracy/size trade-off.
+      </p>
+      <div class="fmp-bar-chart" data-chart="bottleneck"></div>
+    </div>
+
+    <!-- Workspace Source -->
+    <div class="sec-panel sec-panel-hidden" id="panel-workspacegen">
+      <p class="sec-panel-desc">
+        Training on matched-size datasets (~430K trajectories, 150K steps) generated by MotionBenchGen versus
+        random primitive placement isolates the value of LLM-guided scene composition, independent of dataset
+        size. MotionBenchGen's workspaces improve success on every task.
+      </p>
+      <div class="fmp-bar-chart" data-chart="workspacegen"></div>
+    </div>
+
+    <!-- Failure Analysis -->
+    <div class="sec-panel sec-panel-hidden" id="panel-failure">
+      <p class="sec-panel-desc">
+        Extending the shelf evaluation to six shelf variants (versus three in the main benchmark) isolates why
+        shelf tasks are hard: M&pi;NetsFusion always reaches a nearby pose, but open-loop rollout — with no
+        iterative collision checking — is far more prone to scene-collisions in these narrow, cluttered spaces.
+      </p>
+      <div class="fmp-bar-chart" data-chart="failure"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== REAL-WORLD ===================== -->
+<section class="section sec-gray" id="realworld">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">Real-World Deployment</h2>
+
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        M&pi;NetsFusion transfers zero-shot to a physical UR5e. Calibrated RGB-D cameras reconstruct the same
+        point-cloud representation used during simulation training.
+      </p>
+    </div>
+
+    <div class="columns is-centered reveal-block">
+      <div class="column is-half">
+        <div class="fig-wrap">
+          <img src="./static/images/11ExpSetup.jpg"
+               alt="Real-world experimental setup: a UR5e manipulator with a tripod-mounted RGB-D camera">
+          <p class="fig-cap"><strong>Experimental Setup.</strong> UR5e manipulator with a calibrated Intel RealSense D435i RGB-D camera.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="fig-wrap">
+          <img src="./static/images/12RealTasks.jpg"
+               alt="Four real-world evaluation task categories: TableTop, Bins, Articulated, and Shelf">
+          <p class="fig-cap"><strong>Evaluation Categories.</strong> TableTop, Bins, Articulated (drawers/microwave), and Shelf tasks.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="realworld-chart-card reveal-block">
+      <div class="fmp-bar-chart realworld-chart" data-chart="realworld"></div>
+      <p class="tbl-cap" style="text-align:center; font-size:0.82rem; color:#555; margin-top:0.5rem;">
+        <strong>Real-world results.</strong> The planner reaches the goal in 100% of all 200 real-world trials;
+        138 (69%) are fully successful and collision-free. Shelf tasks remain hardest (36%), consistent with
+        simulation — narrow passages and limited shelf-primitive diversity in training.
+      </p>
+    </div>
+
+    <h3 class="subsec-heading">Task Gallery</h3>
+    <div class="task-gallery reveal-block">
+      <div class="task-gallery-nav" role="tablist">
+        <button class="active" data-panel="gal-tabletop">TableTop</button>
+        <button data-panel="gal-bins">Bins</button>
+        <button data-panel="gal-articulated">Articulated</button>
+        <button data-panel="gal-shelf">Shelf</button>
+      </div>
+      <div class="task-gallery-panel active" id="gal-tabletop">
+        <div class="fig-wrap fig-lg">
+          <img src="./static/images/13TableTopReal.jpg"
+               alt="TableTop task real-world rollout with matching simulated point-cloud frames, from start to goal">
+          <p class="fig-cap">TableTop: 48/50 (96%) successful, all 50/50 goals reached.</p>
+        </div>
+      </div>
+      <div class="task-gallery-panel" id="gal-bins">
+        <div class="fig-wrap fig-lg">
+          <img src="./static/images/13BinReal.jpg"
+               alt="Bins task real-world rollout with matching simulated point-cloud frames, from start to goal">
+          <p class="fig-cap">Bins: 42/50 (84%) successful, all 50/50 goals reached.</p>
+        </div>
+      </div>
+      <div class="task-gallery-panel" id="gal-articulated">
+        <div class="fig-wrap fig-lg">
+          <img src="./static/images/14ArticulatedReal.jpg"
+               alt="Articulated task real-world rollout with matching simulated point-cloud frames, from start to goal">
+          <p class="fig-cap">Articulated: 30/50 (60%) successful, all 50/50 goals reached.</p>
+        </div>
+      </div>
+      <div class="task-gallery-panel" id="gal-shelf">
+        <div class="fig-wrap fig-lg">
+          <img src="./static/images/15ShelfReal.jpg"
+               alt="Shelf task real-world rollout with matching simulated point-cloud frames, from start to goal">
+          <p class="fig-cap">Shelf: 18/50 (36%) successful, all 50/50 goals reached.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== CONCLUSION ===================== -->
+<section class="section sec-white" id="conclusion">
+  <div class="container is-max-desktop">
+    <h2 class="sec-heading">Conclusion</h2>
+
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <p>
+        PerFACT pairs MotionBenchGen, an LLM-guided procedural workspace generator, with M&pi;NetsFusion, a
+        bottleneck-fusion action-chunking transformer, to train an end-to-end neural motion planner that
+        matches classical and neural-sampler baselines in success rate while planning up to an order of
+        magnitude faster — and transfers zero-shot to a physical UR5e.
+      </p>
+    </div>
+
+    <div class="contrib-grid">
+      <div class="contrib-card">
+        <div class="contrib-icon"><i class="fas fa-cubes"></i></div>
+        <h4>Diverse Workspace Generation</h4>
+        <p>Procedural primitives plus chain-of-thought LLM placement produce cluttered, physically feasible
+           workspaces at a scale hand-designed benchmarks can't match.</p>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-icon"><i class="fas fa-diagram-project"></i></div>
+        <h4>Robot-Agnostic Problem Generation</h4>
+        <p>Collision-free poses sampled within each workspace and the manipulator's reachable region yield
+           planning problems solvable by any embodiment's inverse kinematics.</p>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-icon"><i class="fas fa-code-branch"></i></div>
+        <h4>Bottleneck-Fusion Transformer</h4>
+        <p>Restricting cross-modal attention through learnable bottleneck tokens keeps sparse configuration
+           signals from being drowned out by dense workspace point clouds.</p>
+      </div>
+    </div>
+
+    <h3 class="subsec-heading">Limitations &amp; Future Work</h3>
+    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
+      <ul>
+        <li><strong>Language-based similarity.</strong> Workspace de-duplication compares LLM-generated text
+            descriptions, which don't always reflect true geometric similarity; vision-based similarity metrics
+            could improve diversity further.</li>
+        <li><strong>Articulated primitives only.</strong> Incorporating existing 3D asset datasets (e.g.,
+            Objaverse) alongside procedural primitives could add realism and clutter variety.</li>
+        <li><strong>Static, embodiment-specific deployment.</strong> M&pi;NetsFusion's open-loop design targets
+            static scenes and is trained only for the UR5e; a reactive local planner (e.g., Geometric Fabrics)
+            layered on top could handle dynamic environments and other embodiments.</li>
+        <li><strong>Shelf-like narrow passages.</strong> Limited shelf-primitive diversity in training and the
+            lack of iterative collision checking at inference both contribute to lower success in tight,
+            cluttered shelf spaces.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== BIBTEX ===================== -->
+<section class="section sec-gray" id="bibtex">
+  <div class="container is-max-desktop content">
+    <h2 class="sec-heading">BibTeX</h2>
+    <pre style="background:#f5f6f8; border-radius:8px; padding:1.2rem 1.4rem; font-size:0.84rem; border:1px solid #e0e4ea;"><code>@article{anonymous2026perfact,
+  title   = {PerFACT: Motion Policy with LLM-Powered Dataset Synthesis and Fusion Action-Chunking Transformers},
+  author  = {Anonymous Authors},
+  journal = {Anonymous submission},
+  year    = {2026}
+}</code></pre>
+  </div>
+</section>
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered" style="font-size:0.83rem; color:#888;">
+          <p>
+            This website is built on the
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> template, licensed under
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
