@@ -155,33 +155,6 @@
       </div>
     </div>
 
-    <!-- Highlights -->
-    <div class="fmp-highlight-shell reveal-block">
-      <div class="highlight-kicker">Highlights</div>
-      <h3>Generate the world, then plan through it in one open-loop pass.</h3>
-      <div class="highlight-grid">
-        <div class="highlight-card primary">
-          <span class="highlight-icon"><i class="fas fa-bolt"></i></span>
-          <strong>0.23s</strong>
-          <p>mean simulated planning time across six held-out environments (0.22&ndash;0.24s per task).</p>
-        </div>
-        <div class="highlight-card">
-          <span class="highlight-icon"><i class="fas fa-layer-group"></i></span>
-          <strong>3.5M</strong>
-          <p>training trajectories collected across ~1000 MotionBenchGen workspaces via cuRobo.</p>
-        </div>
-        <div class="highlight-card">
-          <span class="highlight-icon"><i class="fas fa-chart-line"></i></span>
-          <strong>52.4%</strong>
-          <p>average simulated success rate — competitive with AIT*, MPNets, and SIMPNet baselines.</p>
-        </div>
-        <div class="highlight-card">
-          <span class="highlight-icon"><i class="fas fa-robot"></i></span>
-          <strong>138/200</strong>
-          <p>successful real-world trials (69%) on a physical UR5e across four task categories.</p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -193,8 +166,8 @@
 
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        <strong>MotionBenchGen</strong> uses procedural primitives and LLM-guided placement to create
-        diverse, cluttered, and physically feasible workspaces at scale.
+        <strong>MotionBenchGen</strong> integrates procedural primitive generation with an LLM's reasoning
+        capabilities to generate diverse planning workspaces for neural motion-planner data collection.
       </p>
     </div>
 
@@ -204,7 +177,7 @@
         <h3>An LLM decides scene composition; procedural generation fills it in.</h3>
         <p>
           Given a robot and a randomly chosen number of surrounding tables, MotionBenchGen queries a
-          fine-tuned LLM twice in a few-shot manner: once to pick how many primitives go on each table, and
+          GPT-4 twice in a few-shot manner: once to pick how many primitives go on each table, and
           once to place their origin and orientation — before validating and de-duplicating the result.
         </p>
       </div>
@@ -235,22 +208,21 @@
       <img src="./static/images/fig2_motionbenchgen.png"
            alt="MotionBenchGen framework: robot and table selection, LLM-guided primitive counts, procedural generation, and LLM-guided primitive placement">
       <p>
-        <strong>MotionBenchGen Framework.</strong> A fine-tuned LLM is prompted in a few-shot manner twice per
+        <strong>MotionBenchGen Framework.</strong> GPT-4 is prompted in a few-shot manner twice per
         workspace: first to determine the number of primitives per table, then — once those primitives are
         procedurally generated — to specify each primitive's origin and orientation. The process repeats to
-        generate an arbitrary number (N) of diverse planning workspaces.
+        generate an arbitrary number of diverse planning workspaces.
       </p>
     </div>
 
     <h3 class="subsec-heading">Perception &amp; Planning-Problem Generation</h3>
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        Rather than rendering occluded, slow RGB-D point clouds in simulation, MotionBenchGen synthesizes a
-        privileged workspace point cloud by uniformly sampling points directly on obstacle and manipulator
-        meshes at arbitrary configurations — enabling large-scale training before fine-tuning on real,
-        partial camera reconstructions at deployment. It then samples collision-free poses within the
-        generated primitives and the manipulator's reachable region to define robot-agnostic, scene-specific
-        motion-planning problems that any off-the-shelf planner (OMPL, cuRobo) can solve for data collection.
+        MotionBenchGen provides a high-dimensional point-cloud workspace observation for training neural motion
+        planners. It uniformly samples points on workspace primitives and the manipulator at arbitrary
+        configurations, avoiding occlusion and the cost of rendering RGB-D observations in simulation. It then
+        generates robot-agnostic, scene-specific planning problems by sampling collision-free poses and using
+        collision-aware inverse kinematics.
       </p>
     </div>
 
@@ -258,8 +230,8 @@
       <img src="./static/images/fig3_motionbenchgen_components.png"
            alt="Current-paper Figure 3: MotionBenchGen workspace generation, point-cloud synthesis, and planning-problem generation">
       <p class="fig-cap">
-        <strong>MotionBenchGen components.</strong> The current paper shows workspace generation, point-cloud
-        synthesis, and robot-agnostic planning-problem generation in Figure 3.
+        <strong>MotionBenchGen components.</strong> Workspace generation, point-cloud synthesis, and planning-
+        problem generation, as shown in Figure 3.
       </p>
     </div>
 
@@ -283,8 +255,8 @@
 
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        <strong>M&pi;NetsFusion</strong> routes cross-modal information through learnable bottleneck tokens,
-        keeping robot, workspace, and configuration signals balanced while predicting complete action chunks.
+        <strong>M&pi;NetsFusion</strong> is a neural motion planner that uses bottleneck-based multimodal fusion
+        to attend to different planning modalities and learn their inter-communications.
       </p>
     </div>
 
@@ -293,9 +265,9 @@
         <div class="highlight-kicker">Method</div>
         <h3>Bottleneck tokens mediate cross-modal attention.</h3>
         <p>
-          Current/goal configurations and robot/scene point clouds are tokenized separately, processed by
-          unimodal transformer layers, then fused: each modality attends only to a shared pool of bottleneck
-          tokens inside the fusion transformer, rather than attending directly to every other modality.
+          Current and goal configurations, robot point clouds, and workspace point clouds are encoded as
+          separate planning modalities. Fusion bottleneck tokens mediate communication between modalities
+          before a transformer decoder generates delta-joint actions.
         </p>
         <div class="formula-pill">
           L = (1&frasl;A) &sum;<sub>i=1</sub><sup>A</sup> &Vert; &delta;q<sub>i</sub> &minus; &delta;q&#772;<sub>i</sub> &Vert;<sup>2</sup>
@@ -311,15 +283,14 @@
         <div class="method-step">
           <span>2</span>
           <h4>Fuse Through Bottleneck Tokens</h4>
-          <p>Unimodal transformer layers refine each modality; a fusion transformer routes cross-modal
-             information exclusively through learnable bottleneck tokens, preventing any one modality
-             from dominating.</p>
+          <p>Unimodal transformer layers encode each modality, while the fusion transformer exchanges
+             information through learnable bottleneck tokens.</p>
         </div>
         <div class="method-step">
           <span>3</span>
           <h4>Decode Action Chunks</h4>
-          <p>A transformer decoder attends over the fused memory with learnable action tokens to output a
-             chunk of delta-joint actions, executed open-loop and recursively fed back as the next input.</p>
+          <p>A transformer decoder uses learnable action tokens to output a chunk of delta-joint actions that
+             is executed in an open-loop rollout.</p>
         </div>
       </div>
     </div>
@@ -328,19 +299,17 @@
       <img src="./static/images/fig4_mpinetsfusion_network.png"
            alt="MπNetsFusion architecture: PointNet++ set abstraction and MLP encoders feed unimodal transformers and a fusion transformer with bottleneck tokens, decoded by a transformer decoder into action chunks">
       <p>
-        <strong>M&pi;NetsFusion Architecture.</strong> Current/goal configuration and robot/scene point-cloud
-        embeddings pass through unimodal transformer layers (&times;L<sub>f</sub>), fuse through bottleneck
-        tokens inside the fusion transformer (&times;L<sub>b</sub>), and are decoded — via learnable action
-        tokens — into a chunk of delta-joint actions.
+        <strong>M&pi;NetsFusion network architecture.</strong> Current-time-step workspace information,
+        configuration features, and goal features generate an action sequence that guides the manipulator
+        toward the planning goal.
       </p>
     </div>
 
     <h3 class="subsec-heading">Training Setup</h3>
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        M&pi;NetsFusion is trained end-to-end with an MSE loss on delta-joint actions, using the 3.5M-trajectory
-        dataset collected via MotionBenchGen and cuRobo across roughly 1000 generated workspaces for a UR5e
-        manipulator.
+        We train a 4.9M-parameter M&pi;NetsFusion model with an MSE loss on delta-joint actions. The dataset
+        contains 3.5M trajectories collected with cuRobo across approximately 1,000 MotionBenchGen workspaces.
       </p>
     </div>
     <div class="stats-strip reveal-block">
@@ -362,21 +331,13 @@
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
         We evaluate M&pi;NetsFusion against <strong>AIT*</strong>, <strong>MPNets</strong>, and
-        <strong>SIMPNet</strong> across six held-out environments using the same UR5e and collision-free
-        success criteria.
+        <strong>SIMPNet</strong> across six held-out planning environments. Planning success is defined by
+        reaching the goal pose within the prescribed threshold while avoiding collisions.
       </p>
     </div>
 
     <div class="fmp-bar-chart reveal-block" data-chart="main"></div>
 
-    <h3 class="subsec-heading">Held-out Evaluation</h3>
-    <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
-      <p>
-        Across the six held-out environments, M&pi;NetsFusion achieves
-        <strong>52.4% average collision-free success</strong>, with per-environment planning times between
-        <strong>0.22 and 0.24 seconds</strong>.
-      </p>
-    </div>
   </div>
 </section>
 
@@ -434,7 +395,7 @@
       <p class="sec-panel-desc">
         Because M&pi;NetsFusion unrolls a fixed number of total steps, chunk size trades planning time for
         re-sampling frequency of the robot's body point cloud. Success stays flat, but planning time drops
-        sharply as chunk size grows — the main model (chunk size 10) is roughly 6&times; faster than chunk
+        sharply as chunk size grows — the main model (chunk size 10) is approximately 6&times; faster than chunk
         size 1.
       </p>
       <div class="fmp-bar-chart" data-chart="actionchunk"></div>
@@ -481,7 +442,7 @@
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
         M&pi;NetsFusion is evaluated on a physical UR5e using calibrated RGB-D sensing. The real-world evaluation
-        follows the four task categories reported in the revised paper: TableTop, Bins, Articulated, and Shelf.
+        follows four task categories: TableTop, Bins, Articulated, and Shelf.
       </p>
     </div>
 
@@ -497,7 +458,7 @@
         <div class="fig-wrap">
           <img src="./static/images/fig8_realworld_deployment.png"
                alt="Revised-paper Figure 8: real-world UR5e rollouts for TableTop, Bins, Articulated, and Shelf tasks">
-          <p class="fig-cap"><strong>Real-world deployment.</strong> The revised paper's Figure 8 shows the path profile from start to goal for all four task categories.</p>
+          <p class="fig-cap"><strong>Real-world deployment.</strong> Figure 8 shows the path profile from start to goal for all four task categories.</p>
         </div>
       </div>
     </div>
@@ -505,9 +466,9 @@
     <div class="realworld-chart-card reveal-block">
       <div class="fmp-bar-chart realworld-chart" data-chart="realworld"></div>
       <p class="tbl-cap" style="text-align:center; font-size:0.82rem; color:#555; margin-top:0.5rem;">
-        <strong>Real-world results.</strong> The revised paper reports 138 successful collision-free trials out of
-        200 (69%). Shelf tasks remain hardest (36%), consistent with
-        simulation — narrow passages and limited shelf-primitive diversity in training.
+        <strong>Real-world results.</strong> The paper reports 138 successful collision-free trials out of
+        200 (69%). The lower shelf performance is attributed to limited shelf-like primitive diversity and the
+        sim-to-real perception gap.
       </p>
     </div>
   </div>
@@ -521,32 +482,10 @@
 
     <div class="content" style="font-size:0.95rem; line-height:1.72; color:#333;">
       <p>
-        PerFACT pairs MotionBenchGen, an LLM-guided procedural workspace generator, with M&pi;NetsFusion, a
-        bottleneck-fusion action-chunking transformer, to train an end-to-end neural motion planner that
-        matches classical and neural-sampler baselines in success rate while planning substantially faster,
-        and is evaluated on a physical UR5e.
+        PerFACT integrates MotionBenchGen for LLM-guided workspace generation with M&pi;NetsFusion, an
+        open-loop action-chunking transformer that fuses robot and workspace information through bottleneck
+        tokens. The paper evaluates the resulting planner in simulation and on a physical UR5e.
       </p>
-    </div>
-
-    <div class="contrib-grid">
-      <div class="contrib-card">
-        <div class="contrib-icon"><i class="fas fa-cubes"></i></div>
-        <h4>Diverse Workspace Generation</h4>
-        <p>Procedural primitives plus chain-of-thought LLM placement produce cluttered, physically feasible
-           workspaces at a scale hand-designed benchmarks can't match.</p>
-      </div>
-      <div class="contrib-card">
-        <div class="contrib-icon"><i class="fas fa-diagram-project"></i></div>
-        <h4>Robot-Agnostic Problem Generation</h4>
-        <p>Collision-free poses sampled within each workspace and the manipulator's reachable region yield
-           planning problems solvable by any embodiment's inverse kinematics.</p>
-      </div>
-      <div class="contrib-card">
-        <div class="contrib-icon"><i class="fas fa-code-branch"></i></div>
-        <h4>Bottleneck-Fusion Transformer</h4>
-        <p>Restricting cross-modal attention through learnable bottleneck tokens keeps sparse configuration
-           signals from being drowned out by dense workspace point clouds.</p>
-      </div>
     </div>
 
     <h3 class="subsec-heading">Limitations &amp; Future Work</h3>

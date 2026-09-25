@@ -1,5 +1,5 @@
 // PerFACT interactive bar charts — growing bars on scroll, tabbed metrics,
-// digitized directly from the paper's tables (see comments per chart).
+// Values transcribed from the revised paper's tables and evaluation plots.
 (function () {
   "use strict";
 
@@ -13,7 +13,7 @@
 
   var CHARTS = {
 
-    // ── Main results: Table III / Table IV ──────────────────────────────
+    // ── Main results: Table III ─────────────────────────────────────────
     main: {
       groups: [
         { label: "Sampling-based", methods: ["ait"] },
@@ -30,10 +30,10 @@
       tasks: TASKS6,
       tabs: [
         { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "MπNetsFusion plans in <b>0.22–0.24s</b> across the six environments. Averaged over Table III, this is approximately <b>4.6×</b> faster than AIT*, <b>18.5×</b> faster than MPNets, and <b>13.5×</b> faster than SIMPNet.",
+          desc: "MπNetsFusion has substantially lower planning time across the six environments. As noted in the paper, these timings reflect differences between complete planning pipelines rather than equivalent inference operations.",
           data: { ait: [1.02, 1.02, 1.02, 1.02, 1.02, 1.2], mpnets: [5.79, 2.8, 3.63, 3.39, 2.68, 7], simpnet: [4.54, 2.2, 3.55, 2.21, 2.57, 3.44], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } },
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "MπNetsFusion reaches <b>52.4%</b> average success — on par with AIT* (42.1%), MPNets (51%) and SIMPNet (51.8%) — while being an order of magnitude faster. Shelf tasks remain the hardest for every planner due to narrow passages and limited shelf-primitive diversity in training.",
+          desc: "MπNetsFusion achieves <b>52.4%</b> average collision-free success, compared with 42.1% for AIT*, 51.0% for MPNets, and 51.8% for SIMPNet. Shelf environments remain challenging because of narrow passages and limited shelf-like primitives.",
           data: { ait: [31, 57, 69, 42, 27, 27], mpnets: [49, 67.3, 84.2, 40, 34, 32], simpnet: [67, 88.6, 95, 44, 35, 33], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } }
       ]
     },
@@ -87,7 +87,7 @@
       tasks: TASKS6,
       tabs: [
         { key: "succ", label: "Success Rate ↑", unit: "%", tasks: TASKS6,
-          desc: "MπNetsFusion, its All/Config variants, and ViTacFormer all land within a few points of each other — well above the ACT baseline — confirming that restricting cross-modal flow through bottleneck tokens is what matters most.",
+          desc: "Table V compares ACT, modality-separated variants, ViTacFormer, and MπNetsFusion. The bottleneck-fusion variants achieve comparable or higher success rates than ACT across the evaluated environments.",
           data: { act: [37, 51, 65.25, 30.6, 27, 28.3], all: [49, 61, 86.75, 34, 31, 36.6], config: [57, 60.3, 85, 40.3, 34, 40.6], vitac: [57, 62, 85.75, 35.7, 34.6, 33.4], ours: [58, 61.3, 84.5, 38.0, 34.3, 38.3] } },
         { key: "cold", label: "Cold-Start Time ↓", unit: "ms", tasks: [""],
           desc: "MπNetsFusion responds to a new problem in <b>4.1ms</b> — close to the smallest ACT baseline (3.8ms) despite fusing more modalities, and faster than both separated-modality variants.",
@@ -110,11 +110,8 @@
       tasks: TASKS6,
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "Neural MP's GMM head closes much of the gap to its multi-modal, sampling-based base policy, but MπNetsFusion still edges ahead on TableTop, Box and — most notably — Bins (84.5% vs 58.5%), without any explicit multi-modal sampling head.",
+          desc: "The Neural MP base policy and GMM-head policy are compared with MπNetsFusion in Figure 5. MπNetsFusion achieves 84.5% on Bins, compared with 58.5% for Neural MP with a GMM head.",
           data: { base: [4.0, 19.0, 27.0, 14.0, 11.0, 13.0], gmm: [47.0, 61.0, 58.5, 43.4, 34.4, 29.4], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } },
-        { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "MπNetsFusion plans roughly <b>15×</b> faster than Neural MP's GMM head across every task, since it makes a single forward pass rather than recurrently decoding with an RNN-based head. (Digitized from revised-paper Fig. 5 — no per-task timing values are printed in the paper.)",
-          data: { base: [0.68, 0.72, 0.70, 0.68, 0.70, 0.70], gmm: [3.45, 3.40, 3.60, 3.55, 3.48, 3.42], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } }
       ]
     },
 
@@ -129,11 +126,8 @@
       tasks: TASKS6,
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "With the same ACT-style encoder, MπNetsFusion's single-step flow head matches or slightly exceeds Diffusion Policy's success rate on every task.",
+          desc: "The paper compares Diffusion Policy with MπNetsFusion using the same ACT-style encoder. MπNetsFusion achieves comparable success rates with lower average planning time.",
           data: { dp: [48, 55, 62, 33, 26, 29], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } },
-        { key: "time", label: "Planning Time ↓", unit: "s",
-          desc: "Diffusion Policy's 100 denoising steps make it roughly <b>12×</b> slower than MπNetsFusion for comparable success. (Digitized from revised-paper Fig. 6 — no per-task timing values are printed in the paper.)",
-          data: { dp: [2.10, 2.75, 2.78, 2.65, 2.65, 2.75], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } }
       ]
     },
 
@@ -155,9 +149,6 @@
         { key: "time", label: "Planning Time ↓", unit: "s", tasks: TASKS6,
           desc: "Larger chunks mean fewer robot point-cloud re-samples per rollout, so planning time drops sharply as chunk size grows from 1 to 10.",
           data: { c1: [1.38, 1.36, 1.34, 1.38, 1.39, 1.41], c5: [0.44, 0.49, 0.47, 0.47, 0.46, 0.47], c20: [0.29, 0.34, 0.30, 0.30, 0.28, 0.28], cmain: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } },
-        { key: "rel", label: "Relative Time (×) ↓", unit: "x", tasks: TASKS6,
-          desc: "Normalized to the main chunk size (10): a chunk of 1 is roughly <b>6×</b> slower, chunk 5 is <b>~2×</b> slower, and chunk 20 is <b>~1.3×</b> slower than the main policy.",
-          data: { c1: [6.27, 5.91, 5.58, 5.57, 6.31, 6.40], c5: [2.0, 2.13, 1.95, 1.95, 2.09, 2.13], c20: [1.31, 1.47, 1.25, 1.25, 1.27, 1.27], cmain: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] } }
       ]
     },
 
@@ -176,7 +167,7 @@
       tasks: TASKS6,
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "Any nonzero number of bottleneck tokens beats the no-bottleneck ACT baseline by a wide margin; performance is fairly stable from 1–8 tokens, so 4 is a good accuracy/size trade-off.",
+          desc: "Table IX evaluates different numbers of bottleneck tokens. Performance remains comparable across 1–8 tokens; the main model uses four bottleneck tokens.",
           data: { actwo: [37, 51, 65.25, 30.6, 27, 28.3], b1: [54, 60, 84, 34, 32, 35], b2: [54, 61, 80, 38, 33, 32], b4: [58, 61.3, 84.5, 38.0, 34.3, 38.3], b6: [56, 61, 86, 32, 32, 38], b8: [53, 61, 84, 33, 32, 35] } }
       ]
     },
@@ -208,7 +199,7 @@
           desc: "Success is high and stable on TableTop/Box/Bins, but drops sharply across all six shelf variants — the recurring bottleneck for open-loop planning.",
           data: { v: [58, 61.3, 84.5, 38.0, 34.3, 38.3, 34.3, 28.3, 25.3] } },
         { key: "collision", label: "Any Collision ↓", unit: "%", color: C.red,
-          desc: "Collision rate mirrors the success-rate trend in reverse — shelf environments see 59–74% of rollouts collide somewhere, roughly double the rate on open tasks.",
+          desc: "Scene collisions account for a substantial proportion of failures, particularly in the shelf environments, which require planning through narrow passages.",
           data: { v: [42, 38.7, 15.5, 62, 65.7, 59, 65.7, 71.7, 74.3] } },
         { key: "self", label: "Self-Collision", unit: "%", color: C.gold,
           desc: "Self-collisions stay in the single digits to low teens everywhere — most failures come from hitting the environment, not the robot hitting itself.",
