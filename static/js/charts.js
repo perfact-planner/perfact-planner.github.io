@@ -33,7 +33,7 @@
           desc: "MπNetsFusion has substantially lower planning time across the six environments. As noted in the paper, these timings reflect differences between complete planning pipelines rather than equivalent inference operations.",
           data: { ait: [1.02, 1.02, 1.02, 1.02, 1.02, 1.2], mpnets: [5.79, 2.8, 3.63, 3.39, 2.68, 7], simpnet: [4.54, 2.2, 3.55, 2.21, 2.57, 3.44], ours: [0.22, 0.23, 0.24, 0.24, 0.22, 0.22] } },
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "MπNetsFusion achieves <b>52.4%</b> average collision-free success, compared with 42.1% for AIT*, 51.0% for MPNets, and 51.8% for SIMPNet. Shelf environments remain challenging because of narrow passages and limited shelf-like primitives.",
+          desc: "MπNetsFusion achieves <b>52.4%</b> average collision-free success, compared with 42.2% for AIT*, 51.1% for MPNets, and 60.4% for SIMPNet. Shelf environments remain challenging because of narrow passages and limited shelf-like primitives.",
           data: { ait: [31, 57, 69, 42, 27, 27], mpnets: [49, 67.3, 84.2, 40, 34, 32], simpnet: [67, 88.6, 95, 44, 35, 33], ours: [58.0, 61.3, 84.5, 38.0, 34.3, 38.3] } }
       ]
     },
@@ -183,7 +183,7 @@
       tasks: TASKS6,
       tabs: [
         { key: "sr", label: "Success Rate ↑", unit: "%",
-          desc: "Trained on matched-size (~430K trajectory) datasets, the planner trained on MotionBenchGen's LLM-guided workspaces beats the random-placement baseline on every task — most on Bins (+6pp).",
+          desc: "With matched-size datasets of approximately 430K trajectories and 150K training steps, MotionBenchGen improves success across all six evaluated tasks relative to random workspace generation.",
           data: { random: [45, 55, 71, 33, 26, 32], llm: [48, 59, 77, 34, 29, 37] } }
       ]
     },
